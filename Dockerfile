@@ -1,12 +1,16 @@
-FROM openjdk:16-jdk-oraclelinux8
+# Use the OpenJDK 11 image as the base image
+FROM openjdk:16
 
-COPY src /usr/src/app/src
-COPY pom.xml /usr/src/app
-RUN mvn -f /usr/src/app/pom.xml clean package
+# Create a new app directory for my application files
+RUN mkdir /app
 
-FROM openjdk:16-jdk-oraclelinux8
-ARG DEPENDENCY=/usr/src/app/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENTRYPOINT ["java","-cp","app:app/lib/*","hello.Application"]
+# Copy the app files from host machine to image filesystem
+COPY . /app
+
+# Set the directory for executing future commands
+WORKDIR /app
+
+# Run the Main class
+CMD mvn clean package
+EXPOSE 8080
+ENTRYPOINT [ "java", "-jar", "target/rest-service-complete-0.0.1-SNAPSHOT.jar" ]
