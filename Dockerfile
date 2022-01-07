@@ -1,4 +1,5 @@
-FROM openjdk:16-alpine3.13
+FROM --platform=linux/amd64 openjdk:16-alpine3.13
+
 
 WORKDIR /app
 
